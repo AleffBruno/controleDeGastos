@@ -1,0 +1,4 @@
+reactNavigation
+https://blog.rocketseat.com.br/react-navigation-react-native/
+https://facebook.github.io/react-native/docs/navigation
+https://reactnavigation.org/docs/en/hello-react-navigation.html
