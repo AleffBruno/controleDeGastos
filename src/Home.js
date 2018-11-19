@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View, TouchableOpacity, Button } from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Button,AsyncStorage } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 LocaleConfig.locales['fr'] = {
@@ -43,8 +43,21 @@ export default class Home extends Component {
       title : "Controle de Contas"
   }
 
+  _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('teste');
+      if (value !== null) {
+        // We have data!!
+        console.log(value);
+      }
+     } catch (error) {
+       // Error retrieving data
+     }
+  }
+
   render() {
     const { navigate } = this.props.navigation;
+    
     return (
       <View>
 
@@ -59,7 +72,7 @@ export default class Home extends Component {
             title="+"
           />
           <Button
-            onPress={() => {console.log("button ...")}}
+            onPress={this._retrieveData}
             title="..."
           />
 
