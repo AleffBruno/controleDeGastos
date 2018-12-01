@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, Button,AsyncStorage } from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, Button,AsyncStorage,FlatList } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 
 LocaleConfig.locales['fr'] = {
@@ -20,9 +20,29 @@ const test = {
 
 export default class Home extends Component {
 
+  static navigationOptions = {
+    title : "Controle de Contas"
+  }
+
+  constructor(props){
+    super(props);
+    this.state = {
+        currentDateKey:new Date().getFullYear()+'-'+(new Date().getMonth()+1),
+        billList:JSON.parse('[{"descricao":"jose"},{"descricao":"ze"}]'),
+        //billListData:''
+    }
+    console.log({
+        funcao:'construct Home',
+        estado:this.state
+    })
+
+    this._retrieveData()
+  }
+
   state = {
     markedDatesConfig : {},
-    productList: []
+    productList: [],
+    billList:''
   }
 
   customizeMarkedDates = () => {
@@ -34,33 +54,49 @@ export default class Home extends Component {
     }})
   }
 
-
-  pushElementsOnProductList = () => {
-
-  }
-
-  static navigationOptions = {
-      title : "Controle de Contas"
-  }
-
   _retrieveData = async () => {
     try {
-      const value = await AsyncStorage.getItem('teste');
+      const value = await AsyncStorage.getItem('11-2018');
+      //const value = '{"nome":"jose"}';
+
       if (value !== null) {
-        // We have data!!
-        console.log(value);
+        //debugger;
+        var valueParse = JSON.parse(value);
+
+        //const { docs } = valueParse;
+
+        this.setState({billList:valueParse});
+
+        // valueParse.forEach(function(entry) {
+        //   console.log(entry.descricao);
+        // });
+
+        console.log(valueParse);
+        console.log("_retrieveData function")
+      } else {
+        console.log("tem nada no asyncStorage")
       }
      } catch (error) {
-       // Error retrieving data
+       //error
      }
   }
 
   render() {
     const { navigate } = this.props.navigation;
+    //debugger;
+    buildBillList = this.state.billList.map(function (item) {
+      return (
+        // <View key={item.descricao}>
+        //   <Text>{item.descricao}</Text>
+        // </View>
+        <Text key={item.descricao}>{item.descricao}</Text>
+      );
+    });
+    
     
     return (
       <View>
-
+  
         <View style={styles.menuBar}>
 
           <Text style={{flex:2}}>
@@ -83,6 +119,8 @@ export default class Home extends Component {
           markedDates={this.state.markedDatesConfig}
         />
 
+        {buildBillList}
+        
       </View>
 
     );
