@@ -1,6 +1,11 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, Button,AsyncStorage,FlatList } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
+//var SQLite = require('react-native-sqlite-storage');
+import SQLite from 'react-native-sqlite-storage';
+
+
+
 
 LocaleConfig.locales['fr'] = {
   monthNames: ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'],
@@ -29,14 +34,46 @@ export default class Home extends Component {
     this.state = {
         currentDateKey:new Date().getFullYear()+'-'+(new Date().getMonth()+1),
         billList:JSON.parse('[{"descricao":"jose"},{"descricao":"ze"}]'),
-        //billListData:''
+        //billListData:'',
+        petName:""
     }
+
+    AsyncStorage.clear();
+    
+    //debugger;
+    // db.transaction((tx) => {
+    //   tx.executeSql('SELECT * FROM pet WHERE owner=?',['John'],(tx,results) => {
+    //     var len = results.rows.length;
+    //     if(len > 0) {
+    //        var row = results.rows.item(0);
+    //        this.setState({petName:row.petname})
+    //     }
+    //   })
+    // });
+
+
     console.log({
         funcao:'construct Home',
         estado:this.state
     })
 
-    this._retrieveData()
+    //this._retrieveData()
+    this.insertSqlite()
+  }
+
+  insertSqlite = async () => {
+    var db = await SQLite.openDatabase({name : "sqliteexample.db"}, 
+      function(suss){console.log("sucesso CONEXAO")},
+      function(err){console.log("ERRO CONEXAO")}
+      );
+
+      db.transaction(function(tx) {
+        tx.executeSql('INSERT into pet (owner,petname) values ("ze4","doguinho")');
+      }, function(error) {
+        console.log('Transaction ERROR: ' + error.message);
+      }, function() {
+        console.log('Populated database OK');
+      });
   }
 
   state = {
@@ -96,7 +133,6 @@ export default class Home extends Component {
     
     return (
       <View>
-  
         <View style={styles.menuBar}>
 
           <Text style={{flex:2}}>
